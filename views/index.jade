@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  #board1(style="width: 400px")
+  input#initMove(type="text")
+  input#targetMove(type="text")
+  input#moveButton(type="button", value="Move")
+
+block myscripts
+  script(type='text/javascript').
+      var board = new ChessBoard('board1', 'start');
+
+      function doMove() {
+        var init = $('#initMove').val();
+        var target = $('#targetMove').val();
+        board.move(init + '-' + target);
+      }
+
+      $("#moveButton").on('click', function() {
+        doMove();
+        })
