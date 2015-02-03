@@ -13,27 +13,59 @@ block myscripts
   script(type='text/javascript').
       var board = new ChessBoard('board1', 'start');
 
+      function clearPosition() {
+        $('#initMove').val('');
+        $('#targetMove').val('');
+      }
+
       function doMove() {
         var init = $('#initMove').val();
         var target = $('#targetMove').val();
         var mvmt = init + '-' + target;
         console.log('moving to ' + mvmt)
         board.move(mvmt);
+
+        clearPosition();
       }
+
+      function setPosition(pos) {
+        console.log('something in position');
+        var init = $('#initMove').val();
+        var target = $('#targetMove').val();      
+        if(!init) {
+          $('#initMove').val(pos);        
+        }
+        else if(!target) {
+          $('#targetMove').val(pos);
+        }
+      }
+
 
       $("#moveButton").on('click', function() {
         doMove();
-        });
+      });
 
       if (annyang) {
         // Let's define a command.
         var commands = {
-          'e2': function() { $('#initMove').val('e2') },
-          'e4': function() { $('#targetMove').val('e4') },
-          'e7': function() { $('#initMove').val('e7') },
-          'e5': function() { $('#targetMove').val('e5') },
-          'move': function() { doMove(); }
+          'move': function() { doMove(); },
+          'clear': function() { clearPosition(); }
         };
+
+      function setCommand(pos) {
+        commands[pos] = function() { setPosition(pos); }; 
+      }        
+
+        var initAscii = 96; // before a char
+        for(i = 1; i < 9; i++) {
+          for(j = 1; j < 9; j++) {
+            var file = String.fromCharCode(initAscii+i);
+            var position = file+j.toString();
+            setCommand(position);
+          }
+        }
+
+        console.log(commands);
 
         // Add our commands to annyang
         annyang.addCommands(commands);
